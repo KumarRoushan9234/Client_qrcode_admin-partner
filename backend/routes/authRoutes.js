@@ -6,6 +6,7 @@ import nodemailer from "nodemailer";
 import dotenv from "dotenv";
 import { checkAuth } from "../middleware/authMiddleware.js";
 
+// dotenv config
 dotenv.config();
 
 const router = express.Router();
