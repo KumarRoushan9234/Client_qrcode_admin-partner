@@ -1,56 +1,69 @@
 import { useState } from "react";
 import axios from "axios";
 
-export default function Signup() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+const Signup = () => {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
+  const [error, setError] = useState("");
+  const [message, setMessage] = useState("");
 
-  const handleSignup = async (e) => {
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({ ...prevData, [name]: value }));
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:5000/api/auth/signup", {
-        name,
-        email,
-        password,
-      });
-      alert("Signup successful! Please login.");
+      await axios.post("/api/auth/signup", formData);
+      setMessage("User registered successfully!");
     } catch (err) {
-      alert(err.response?.data?.error || "Signup failed");
+      setError(err.response?.data?.error || "Something went wrong!");
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-white p-8 shadow-md rounded w-96">
-        <h2 className="text-2xl font-bold mb-4">Signup</h2>
-        <form onSubmit={handleSignup}>
-          <input
-            type="text"
-            placeholder="Name"
-            className="w-full p-2 border rounded mb-2"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-          <input
-            type="email"
-            placeholder="Email"
-            className="w-full p-2 border rounded mb-2"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            className="w-full p-2 border rounded mb-2"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <button className="w-full bg-green-500 text-white p-2 rounded">
-            Signup
-          </button>
-        </form>
-      </div>
+    <div className="max-w-md mx-auto p-4">
+      <h2 className="text-2xl font-bold text-center">Sign Up</h2>
+      {error && <div className="text-red-500">{error}</div>}
+      {message && <div className="text-green-500">{message}</div>}
+      <form onSubmit={handleSubmit} className="space-y-4 mt-4">
+        <input
+          type="text"
+          name="name"
+          placeholder="Full Name"
+          value={formData.name}
+          onChange={handleChange}
+          className="w-full p-3 border border-gray-300 rounded-md"
+        />
+        <input
+          type="email"
+          name="email"
+          placeholder="Email"
+          value={formData.email}
+          onChange={handleChange}
+          className="w-full p-3 border border-gray-300 rounded-md"
+        />
+        <input
+          type="password"
+          name="password"
+          placeholder="Password"
+          value={formData.password}
+          onChange={handleChange}
+          className="w-full p-3 border border-gray-300 rounded-md"
+        />
+        <button
+          type="submit"
+          className="w-full py-3 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+        >
+          Sign Up
+        </button>
+      </form>
     </div>
   );
-}
+};
+
+export default Signup;
